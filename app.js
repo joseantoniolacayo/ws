@@ -34,7 +34,7 @@ app.post('/', async (req, res) => {
 
   // Forward to n8n
   try {
-    await fetch("https://TU_SUBDOMINIO.n8n.cloud/webhook/whatsapp", {
+    await fetch("https://wapster.app.n8n.cloud/webhook/whatsapp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(req.body),
