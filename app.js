@@ -11,7 +11,7 @@ app.use(express.json());
 const port = process.env.PORT || 3000;
 const verifyToken = process.env.VERIFY_TOKEN;
 
-// Route for GET requests (Meta verification)
+// Route for GET requests
 app.get('/', (req, res) => {
   const { 'hub.mode': mode, 'hub.challenge': challenge, 'hub.verify_token': token } = req.query;
 
@@ -23,26 +23,12 @@ app.get('/', (req, res) => {
   }
 });
 
-// Route for POST requests (Meta events)
-app.post('/', async (req, res) => {
+// Route for POST requests
+app.post('/', (req, res) => {
   const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
   console.log(`\n\nWebhook received ${timestamp}\n`);
   console.log(JSON.stringify(req.body, null, 2));
-
-  // Respond immediately to Meta
   res.status(200).end();
-
-  // Forward to n8n
-  try {
-    await fetch("https://wapster.app.n8n.cloud/webhook/whatsapp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(req.body),
-    });
-    console.log("Payload reenviado a n8n ✅");
-  } catch (err) {
-    console.error("Error reenviando a n8n ❌:", err);
-  }
 });
 
 // Start the server
