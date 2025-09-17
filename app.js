@@ -24,12 +24,23 @@ app.get('/', (req, res) => {
 });
 
 // Route for POST requests
-app.post('/', (req, res) => {
-  const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
-  console.log(`\n\nWebhook received ${timestamp}\n`);
-  console.log(JSON.stringify(req.body, null, 2));
-  res.status(200).end();
+app.post('/', async (req, res) => {
+  res.sendStatus(200); // responder rápido a Meta
+
+  try {
+    const r = await fetch(process.env.N8N_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(req.body),
+    });
+    console.log('Enviado a n8n, status:', r.status);
+    const txt = await r.text();
+    if (txt) console.log('Respuesta n8n:', txt.slice(0, 200));
+  } catch (err) {
+    console.error('Error reenvío a n8n ❌', err?.message || err);
+  }
 });
+
 
 // Route for POST requests
 app.post('/', async (req, res) => {
