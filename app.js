@@ -31,6 +31,29 @@ app.post('/', (req, res) => {
   res.status(200).end();
 });
 
+// Route for POST requests
+app.post('/', async (req, res) => {
+  const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
+  console.log(`\n\nWebhook received ${timestamp}\n`);
+  console.log(JSON.stringify(req.body, null, 2));
+
+  // responde inmediato a Meta/cliente
+  res.status(200).end();
+
+  // reenvía asincrónicamente a n8n (Production URL)
+  try {
+    await fetch(process.env.N8N_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(req.body),
+    });
+    console.log('Payload reenviado a n8n ✅');
+  } catch (err) {
+    console.error('Error reenviando a n8n ❌', err?.message || err);
+  }
+});
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`\nListening on port ${port}\n`);
