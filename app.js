@@ -1,6 +1,5 @@
 // Import Express.js
 const express = require('express');
-const fetch = require('node-fetch'); // 👈 agrega esta librería (npm install node-fetch)
 
 // Create an Express app
 const app = express();
@@ -30,10 +29,10 @@ app.post('/', async (req, res) => {
   console.log(`\n\nWebhook received ${timestamp}\n`);
   console.log(JSON.stringify(req.body, null, 2));
 
-  // 👇 Responder rápido a Meta
+  // Respond immediately to Meta
   res.status(200).end();
 
-  // 👇 Forward hacia n8n
+  // Forward to n8n
   try {
     await fetch("https://TU_SUBDOMINIO.n8n.cloud/webhook/whatsapp", {
       method: "POST",
